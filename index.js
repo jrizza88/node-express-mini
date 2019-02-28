@@ -18,8 +18,8 @@ server.get("/api/users", (req, res) => {
     .then(users => {
         res.json(users);
     })
-    .catch(({code, message}) =>{
-        res.status(code).json({err: message})
+    .catch(() => {
+        res.status(500).json({error: "The users information could not be retrieved."})
     })
 })
 
@@ -29,12 +29,30 @@ server.get("/api/users/:id", (req, res) => {
     
     db.findById(id)
     .then( users => {
-        users ? res.json(users) : res.status(400).json({err: "invalid id!"});
+        users ? 
+        res.json(users) : 
+        res.status(404).json({message: "The user with the specified ID does not exist."});
     })
-    .catch(({code, message}) =>{
-        res.status(code).json({err: message})
+    .catch(() => {
+        res.status(500).json({message: "The user information could not be retrieved."});
     })
 })
+
+server.post("/api/users", (req, res) => {
+    const userBody = req.body;
+
+    db.insert(userBody)
+    .then( users => {
+        if (users) {
+            res.status(201).json(users);
+         }
+        else {
+            res.status(400).json({errorMessage: "Please provide name and bio for the user."});
+            }
+        }).catch(() => {
+            res.status(500).json({ error: "There was an error while saving the user to the database"})
+        })
+    })
 
 //1. when setting up server, it will need to invoke the methods
 // from the db.js files 
