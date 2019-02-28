@@ -63,16 +63,32 @@ server.put("/api/users/:id", (req, res) => {
         return;
     }
 
+    db.findById(id)
+    .then( user => {
+        if (user.length === 0){
+            res.status(400).json({errorMessage: "No users with this id exists.. "})
+        }
+    })
+
     db.update(id, {name, bio})
     .then (user => {
        if (user) {
             res.sendStatus(200).json(user)
        } 
-    //    else if (id === 0) {
-    //        res.status(400).json({errorMessage: "No users with this id exists.. "})
-    //    }
     }).catch(() => {
-        resizeTo.status(500).json({error: "The user information could not be modified"})
+        res.status(500).json({error: "The user information could not be modified"})
+    })
+})
+
+server.delete("/api/users/:id", (req, res) => {
+    const { id } = req.params;
+
+    db.remove(id)
+    .then(user => {
+        res.status(404).json({message: "The user with the specified ID does not exist."})
+    })
+    .catch(() => {
+        res.status(500).json({error: "the user could not be removed"})
     })
 })
 
