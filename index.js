@@ -63,13 +63,6 @@ server.put("/api/users/:id", (req, res) => {
         return;
     }
 
-    // db.findById(id)
-    // .then( user => {
-    //     if (user.length === 0){
-    //         res.status(400).json({errorMessage: "No users with this id exists.. "})
-    //         return;
-    //     }
-    // })
 
     db.update(id, {name, bio})
     .then (user => {
@@ -94,15 +87,6 @@ server.delete("/api/users/:id", (req, res) => {
         res.status(500).json({error: "the user could not be removed"})
     })
 })
-
-//1. when setting up server, it will need to invoke the methods
-// from the db.js files 
-
-// 2. then you need a promise (use .then and .catch)
-
-// in some cases you will need an if else or ternary function 
-// to compare a successful request or if a user doesn't do somethign right
-// and then you can incorporate the catch!
 
 server.listen(PORT, () => {
     console.log(`Server is listening on ${PORT}`)
