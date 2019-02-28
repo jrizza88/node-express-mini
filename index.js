@@ -63,18 +63,21 @@ server.put("/api/users/:id", (req, res) => {
         return;
     }
 
-    db.findById(id)
-    .then( user => {
-        if (user.length === 0){
-            res.status(400).json({errorMessage: "No users with this id exists.. "})
-        }
-    })
+    // db.findById(id)
+    // .then( user => {
+    //     if (user.length === 0){
+    //         res.status(400).json({errorMessage: "No users with this id exists.. "})
+    //         return;
+    //     }
+    // })
 
     db.update(id, {name, bio})
     .then (user => {
        if (user) {
             res.sendStatus(200).json(user)
-       } 
+       }  else {
+        res.status(400).json({errorMessage: "No users with this id exists.. "})
+       }
     }).catch(() => {
         res.status(500).json({error: "The user information could not be modified"})
     })
