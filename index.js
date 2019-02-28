@@ -28,9 +28,9 @@ server.get("/api/users/:id", (req, res) => {
     // alt way const { id } = req.params
     
     db.findById(id)
-    .then( users => {
-        users ? 
-        res.json(users) : 
+    .then( user => {
+        user ? 
+        res.json(user) : 
         res.status(404).json({message: "The user with the specified ID does not exist."});
     })
     .catch(() => {
@@ -42,9 +42,9 @@ server.post("/api/users", (req, res) => {
     const userBody = req.body;
 
     db.insert(userBody)
-    .then( users => {
-        if (users) {
-            res.status(201).json(users);
+    .then( user => {
+        if (user) {
+            res.status(201).json(user);
          }
         else {
             res.status(400).json({errorMessage: "Please provide name and bio for the user."});
@@ -53,6 +53,20 @@ server.post("/api/users", (req, res) => {
             res.status(500).json({ error: "There was an error while saving the user to the database"})
         })
     })
+
+server.put("/api/users/:id", (req, res) => {
+    const { id } = req.params;
+    const updateUser = req.body;
+
+    db.update(id, updateUser)
+    .then (user => {
+       user ? 
+        res.sendStatus(200).json(user):
+        res.status(400).json({errorMessage: "Please provide name and bio for the user."})
+    }).catch(() => {
+        resizeTo.status(500).json({error: "The user information could not be modified"})
+    })
+})
 
 //1. when setting up server, it will need to invoke the methods
 // from the db.js files 
